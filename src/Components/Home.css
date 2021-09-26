@@ -1,0 +1,37 @@
+.HomeContainer{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.Calendar{
+    padding-top: 50px;
+}
+
+.Appointments{
+    padding-left: 50px;
+}
+
+.DayPicker-Months {
+    background-color: lightgrey !important;
+}
+
+.title{
+    font-size: x-large;
+    padding-right: 50px;
+}
+
+.list{
+    padding-right: 75px;
+}
+
+@media screen and (max-width: 800px) {
+    .Calendar{
+        padding-top: 10px;
+    }
+    .HomeContainer{
+        flex-direction: column;
+    }
+}

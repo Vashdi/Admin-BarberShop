@@ -1,0 +1,84 @@
+.NewsContainer{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+}
+
+.CalendarDist{
+    display: flex;
+    flex-direction: column;
+}
+
+.titleOneDay{
+    padding-top: 35px;
+    padding-bottom: 10px;
+}
+
+.secondContainer{
+    display: flex;
+    flex-direction: column;
+    padding-left: 100px;
+}
+
+.titleDays{
+    padding-bottom: 10px;
+}
+
+.CalendarSecond{
+    padding-top: 35px;
+}
+
+.HoursDist{
+    padding-top: 10px;
+}
+
+.StartHour{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.EndHour{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.distButton{
+    padding-top: 10px;
+}
+
+.SaveButton{
+    border-radius: 50px;
+}
+
+.SaveButton:hover{
+    color:white;
+    background-color: black;
+}
+
+@media screen and (max-width : 900px) {
+    .NewsContainer{
+        flex-direction: column;
+        align-items: center;
+    }
+    .secondContainer{
+        padding-left: 0px;
+    }
+    .titleOneDay{
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    .titleDays{
+        padding-top: 20px;
+    }
+
+    .CalendarSecond{
+        padding-top: 0px;
+    }
+}
