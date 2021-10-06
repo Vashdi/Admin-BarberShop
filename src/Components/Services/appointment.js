@@ -17,22 +17,37 @@ const getByPhone = async (phone) => {
   return request.data;
 }
 
-const deleteById = async (id) => {
-  const request = await axios.delete(baseUrl + "/" + id);
-  return request.data;
+const deleteById = async (isClientApp, id, token, dateToDeleteFromClosed) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  let request;
+  try {
+    if (isClientApp) {
+      request = await axios.delete(baseUrl + "/" + id, config);
+    }
+    else {
+      request = await axios.delete('http://localhost:3001/adminAppointment/' + id, config);
+    }
+    await axios.delete("http://localhost:3001/closedDays/" + dateToDeleteFromClosed);
+    return request.data;
+  }
+  catch (e) {
+    console.log(e);
+  }
+
 }
 
 const getByDate = async (date) => {
-  const request = await axios.get(baseUrl);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const request = await axios.get(baseUrl + `/${year}/${month}/${day}`);
   const apps = request.data;
-  const toSplit = date.split("/", 3);
-  const toSplitAgain = toSplit[2].split(" ", 3);
-  const day = toSplit[0] - '0';
-  const month = toSplit[1] - '0';
-  const year = toSplitAgain[0] - '0';
-  const hour = toSplitAgain[2];
-  const ourDateArr = apps.filter(app => app.day === day && app.month === month && app.year === year && app.hour === hour);
-  return ourDateArr[0];
+  const adminRequest = await axios.get(`http://localhost:3001/adminAppointment/${year}/${month}/${day}`);
+  const adminApps = adminRequest.data;
+  const allApp = apps.concat(adminApps);
+  return allApp;
 }
 
 const deleteApp = async (id) => {
@@ -57,26 +72,45 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
-const checkHours = async (selectedDay, hours, setHoursToShow) => {
+const checkHours = async (selectedDay, hours, setHoursToShow, hoursToStrict, setPickedHour) => {
   if (selectedDay !== " ") {
-    const currDay = new Date().getDate();
-    const currMonth = new Date().getMonth() + 1;
+    let newHours = " ";
+    let newHoursToShowAfterAdminStrict = " ";
     const currYear = new Date().getFullYear();
+    const currMonth = new Date().getMonth() + 1;
+    const currDay = new Date().getDate();
     const currHour = new Date().getHours();
     const ourDay = selectedDay.getDate();
     const ourMonth = selectedDay.getMonth() + 1;
     const ourYear = selectedDay.getFullYear();
-    const resp = await axios.get(`/appointments/day/${ourDay}`);
+    const searchForHour = hoursToStrict.find(date => new Date(date.day).getDate() === ourDay && new Date(date.day).getFullYear() === ourYear && new Date(date.day).getMonth() === (ourMonth - 1));
+    if (searchForHour !== undefined) {
+      const start = searchForHour.start;
+      const end = searchForHour.end;
+      const startIndex = hours.indexOf(start);
+      const endIndex = hours.indexOf(end);
+      newHours = hours.slice(startIndex, endIndex);
+    }
+    const resp = await axios.get(`http://localhost:3001/appointments/day/${ourDay}`);
+    const respAdmin = await axios.get(`http://localhost:3001/adminAppointment/${ourYear}/${ourMonth}/${ourDay}`);
     const appForDay = resp.data;
+    const adminAppForDay = respAdmin.data;
     const appForDayAndMonth = appForDay.filter(app => app.month === ourMonth);
     const appForDayAndMonthAndYear = appForDayAndMonth.filter(app => app.year = ourYear);
-    const hoursForDate = appForDayAndMonthAndYear.map(appointment => appointment.hour);
-    const newHoursToShow = hours.filter(theHours => !hoursForDate.includes(theHours));
-    let newHouresToShowFromCurrHour = newHoursToShow;
+    let hoursForDate = appForDayAndMonthAndYear.map(appointment => appointment.hour);
+    const adminHoursForDate = adminAppForDay.map(appointment => appointment.hour);
+    hoursForDate = hoursForDate.concat(adminHoursForDate);
+    newHoursToShowAfterAdminStrict = hours.filter(theHours => !hoursForDate.includes(theHours));
+    if (newHours !== " ") {
+      newHoursToShowAfterAdminStrict = newHours.filter(theHours => newHoursToShowAfterAdminStrict.includes(theHours));
+    }
+    let newHouresToShowFromCurrHour = newHoursToShowAfterAdminStrict;
     if (currDay === ourDay && currMonth === ourMonth && currYear === ourYear) {
-      newHouresToShowFromCurrHour = newHoursToShow.filter(theHours => theHours.split(":", 2)[0] - '0' > currHour + 1);
-      const emptyArr = ["pick a time.."];
-      newHouresToShowFromCurrHour = emptyArr.concat(newHouresToShowFromCurrHour);
+      newHouresToShowFromCurrHour = newHoursToShowAfterAdminStrict.filter(theHours => theHours.split(":", 2)[0] - '0' > currHour + 1);
+    }
+    if (setPickedHour !== null) {
+      if (newHouresToShowFromCurrHour.length > 0)
+        setPickedHour(newHouresToShowFromCurrHour[0]);
     }
     setHoursToShow(newHouresToShowFromCurrHour);
   }
@@ -125,7 +159,6 @@ const sortAppointments = async (user) => {
   const allUsers = await axios.get("/users");
   const data = allUsers.data;
   const allApp = data.filter(oneUser => oneUser.phone === user.phone);
-  console.log(allApp.length !== 0);
   if (allApp.length !== 0) {
     const appointmentsToShowSorted = sortAppFromOurDate(allApp[0].appointments);
 
@@ -140,4 +173,11 @@ const sortAppointments = async (user) => {
   }
 }
 
-export default { getAll, create, update, setToken, checkHours, getByPhone, sortAppointments, deleteApp, sortAppByStringDate, getByDate, deleteById }
+const createABreak = async (causeOfBreak, selectedDay, pickedHours) => {
+  const year = selectedDay.getFullYear();
+  const month = selectedDay.getMonth() + 1;
+  const day = selectedDay.getDate();
+  await axios.post("http://localhost:3001/adminAppointment/break", { array: pickedHours, year: year, month: month, day: day, cause: causeOfBreak });
+}
+
+export default { getAll, create, update, setToken, checkHours, getByPhone, sortAppointments, deleteApp, sortAppByStringDate, getByDate, deleteById, createABreak }

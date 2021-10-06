@@ -1,9 +1,17 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/strict'
 
-const makeNewStrict = async (strict) => {
-    const request = await axios.post(baseUrl, strict);
-    return request.data;
+const getAllStricts = async () => {
+    const resp = await axios.get("http://localhost:3001/strict");
+    const allStricts = resp.data;
+    return allStricts;
 }
 
-export default { makeNewStrict }
+
+const getAllStrictDay = async () => {
+    const resp = await axios.get("http://localhost:3001/strictDay");
+    const allStricts = resp.data;
+    return allStricts;
+}
+
+
+export default { getAllStricts, getAllStrictDay }

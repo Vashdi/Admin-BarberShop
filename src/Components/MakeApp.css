@@ -1,0 +1,62 @@
+.container{
+    text-align: center;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.firstName{
+    display: flex;
+    flex-direction: row-reverse;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+}
+
+.firstNameTitle{
+    padding-left: 10px;
+}
+
+.lastName{
+    display: flex;
+    flex-direction: row-reverse;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    padding-left: 15px;
+}
+
+.lastNameTitle{
+    padding-left: 10px;
+}
+
+.dateContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.dayPicker{
+    justify-content: center;
+    align-items: center;
+}
+
+.hourTitle{
+    padding-left: 10px;
+}
+
+.hourPicker{
+    display:flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+}
+
+.saveButton{
+    border-radius: 50px;
+}
+
+.saveButton:hover{
+    background-color: rgba(172, 255, 47, 0.63);
+}

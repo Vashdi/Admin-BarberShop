@@ -6,8 +6,8 @@ const Routing = () => {
     return (
         <HashRouter>
             <Switch>
-                <Route exact path="/" component={App} />
-                <Route path="/Start" component={Start} />
+                <Route path="/Login" component={App} />
+                <Route path="/" component={Start} />
             </Switch>
         </HashRouter>)
 }

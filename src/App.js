@@ -1,11 +1,24 @@
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import adminLogin from './Components/Services/Login';
 
 function App(props) {
-  const [phone, setPhone] = useState(" ");
-  const [password, setPassword] = useState(" ");
-  const moveToHome = () => {
-    props.history.push("/Start");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  useEffect(() => {
+    if (localStorage.getItem("admin")) {
+      props.history.push("/");
+    }
+  }, [])
+  const moveToHome = async () => {
+    try {
+      const data = await adminLogin.login({ phone: phone, password: password });
+      localStorage.setItem("admin", JSON.stringify({ phone: data.phone, token: data.token }))
+      props.history.push("/");
+    }
+    catch (exception) {
+      console.log(exception);
+    }
   }
   return (
     <div className="Container">
@@ -22,7 +35,7 @@ function App(props) {
           </div>
           <div className="textAndTitle">
             <div className="passText" >
-              <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div>
               :סיסמא
