@@ -18,7 +18,6 @@ const SingleAppToShow = ({ singleApp }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 if (localStorage.getItem("admin")) {
-                    console.log(singleApp);
                     if (singleApp.user !== undefined) {
                         setIsClientApp(true);
                     }

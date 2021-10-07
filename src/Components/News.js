@@ -108,7 +108,6 @@ const News = (props) => {
 
         try {
             if (end > start && selectedDay !== "" && selectedDay !== " " && selectedDay) {
-                console.log("a" + selectedDay + "b")
                 await strictDayService.makeNewStrictDay({ day: selectedDay, start: start, end: end }, config);
                 Swal.fire({
                     position: 'center',

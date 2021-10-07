@@ -10,6 +10,7 @@ import * as React from 'react';
 import './Start.css'
 import MakeApp from './MakeApp';
 import Break from './Break';
+import AllUsers from './AllUsers';
 const AccordionSummaryStyled = withStyles({
     root: {
         flexDirection: "column"
@@ -89,6 +90,20 @@ function Start(props) {
                 <AccordionDetails>
                     <div className="News" >
                         <Break props={props} />
+                    </div>
+                </AccordionDetails>
+            </Accordion>
+            <Accordion>
+                <AccordionSummaryStyled
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                >
+                    <Typography>כל המשתמשים</Typography>
+                </AccordionSummaryStyled>
+                <AccordionDetails>
+                    <div>
+                        <AllUsers props={props} />
                     </div>
                 </AccordionDetails>
             </Accordion>

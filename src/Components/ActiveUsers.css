@@ -1,0 +1,41 @@
+.AllUsersContainer{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchText{
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.searchContext{
+    padding-left: 10px;
+}
+
+.personContainer{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    column-gap: 30px;
+}
+
+.singlePerson{
+    display: flex;
+    flex-direction: row;
+}
+
+.avatarCss{
+    padding-top: 7.5px;
+}
+
+.deleteIcon{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.blockIcon{
+    margin-top: 10px;
+    margin-left: -10px;
+}
