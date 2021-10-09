@@ -8,15 +8,20 @@ const setToken = newToken => {
 }
 
 const create = async newAppointment => {
-    if (token !== "bearer ") {
-        const config = {
-            headers: { Authorization: token },
+    try {
+        if (token !== "bearer ") {
+            const config = {
+                headers: { Authorization: token },
+            }
+            const response = await axios.post(baseUrl, newAppointment, config)
+            return response.data
         }
-        const response = await axios.post(baseUrl, newAppointment, config)
-        return response.data
+        else {
+            throw new Error(error.response.data);
+        }
+    } catch (error) {
+        throw new Error(error.response.data);
     }
-    else
-        window.alert("You Need To Log in First!");
 }
 
 export default { create, setToken }

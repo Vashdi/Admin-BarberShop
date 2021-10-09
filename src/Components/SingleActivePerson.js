@@ -37,23 +37,31 @@ const SinglePerson = ({ user, index, callback }) => {
             callback(user);
         } catch (error) {
             Swal.fire({
+                position: 'center',
                 icon: 'error',
                 title: error.response.data,
-                text: error.text,
             })
         }
     }
 
     const handleBlock = async () => {
-        let token = " ";
-        if (localStorage.getItem("admin")) {
-            const data = localStorage.getItem("admin");
-            const dataFromJson = JSON.parse(data);
-            token = dataFromJson.token;
+        try {
+            let token = " ";
+            if (localStorage.getItem("admin")) {
+                const data = localStorage.getItem("admin");
+                const dataFromJson = JSON.parse(data);
+                token = dataFromJson.token;
+            }
+            await usersService.deleteUser(user.id, token);
+            callback(user);
+            await usersService.blockUser(user, token);
+        } catch (error) {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error.response.data,
+            })
         }
-        await usersService.deleteUser(user.id, token);
-        callback(user);
-        await usersService.blockUser(user, token);
     }
 
     return (

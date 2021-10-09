@@ -91,12 +91,13 @@ const News = (props) => {
                     title: "לא נבחרו תאריכים",
                 })
             }
+        } catch (error) {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error.response.data,
+            })
         }
-        catch (exception) {
-            props.props.history.push("/");
-            window.alert("אין לך אישור לבצע שינויים,נא התחבר למערכת!")
-        }
-
     }
 
     const updateDayStricts = async () => {
@@ -136,17 +137,13 @@ const News = (props) => {
                     title: `שעת סיום לא תקינה, אנא בחר שעת סיום מאוחרת יותר משעת ההתחלה`,
                 })
             }
-
-        }
-        catch (exception) {
+        } catch (error) {
             Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: `אין לך אישור לבצע שינויים,נא התחבר למערכת!`,
+                title: error.response.data,
             })
-            props.props.history.push("/");
         }
-
     }
 
     const handleChangeOfStart = (e) => {

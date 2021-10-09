@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 import appService from './Services/appointment'
 import SingleAppToShow from "./SingleAppToShow";
 import './SingleDayToShow.css'
@@ -11,10 +12,18 @@ const SingleDayToShow = (props) => {
     const dispatch = useDispatch();
     useEffect(() => {
         async function getAppointmentsForSingleDay() {
-            const appointmentsForSingleDay = await appService.getByDate(props.selectedDay);
-            const sortedAppointmentsForSingleDay = appointmentsForSingleDay.sort((a, b) => a.hour > b.hour ? 1 : -1);
-            setAllAppsForSingleDay(sortedAppointmentsForSingleDay);
-            dispatch({ type: "REPLACEALL", payload: appointmentsForSingleDay })
+            try {
+                const appointmentsForSingleDay = await appService.getByDate(props.selectedDay);
+                const sortedAppointmentsForSingleDay = appointmentsForSingleDay.sort((a, b) => a.hour > b.hour ? 1 : -1);
+                setAllAppsForSingleDay(sortedAppointmentsForSingleDay);
+                dispatch({ type: "REPLACEALL", payload: appointmentsForSingleDay })
+            } catch (error) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: error.response.data,
+                })
+            }
         }
         getAppointmentsForSingleDay();
     }, [props.selectedDay])

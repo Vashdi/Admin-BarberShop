@@ -9,6 +9,7 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
 import './SingleBlockedPerson.css'
+import Swal from 'sweetalert2';
 
 
 const LightTooltip = styled(({ className, ...props }) => (
@@ -25,14 +26,22 @@ const LightTooltip = styled(({ className, ...props }) => (
 
 const singleBlockedPerson = ({ user, index, callback }) => {
     const handleUnBlock = async () => {
-        let token = " ";
-        if (localStorage.getItem("admin")) {
-            const data = localStorage.getItem("admin");
-            const dataFromJson = JSON.parse(data);
-            token = dataFromJson.token;
+        try {
+            let token = " ";
+            if (localStorage.getItem("admin")) {
+                const data = localStorage.getItem("admin");
+                const dataFromJson = JSON.parse(data);
+                token = dataFromJson.token;
+            }
+            await usersService.unBlockUser(user, token);
+            callback(user);
+        } catch (error) {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error.response.data,
+            })
         }
-        await usersService.unBlockUser(user, token);
-        callback(user);
     }
 
     return (

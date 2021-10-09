@@ -18,20 +18,28 @@ const MakeApp = (props) => {
     const [hoursToStrict, setHoursToStrict] = useState([]);
     useEffect(() => {
         const start = async () => {
-            const stricts = await strictService.getAllStricts();
-            const strictHours = await strictService.getAllStrictDay();
-            let newStrictsToShow = newStrict;
-            stricts.map(strict => {
-                const day = strict.day;
-                const split = day.split("-");
-                const year = split[0];
-                const month = split[1];
-                const dateWithHours = split[2];
-                const date = dateWithHours.split("T")[0];
-                newStrictsToShow = newStrictsToShow.concat(new Date(year, month - 1, date));
-            })
-            setHoursToStrict(strictHours);
-            setNewStrict(newStrictsToShow);
+            try {
+                const stricts = await strictService.getAllStricts();
+                const strictHours = await strictService.getAllStrictDay();
+                let newStrictsToShow = newStrict;
+                stricts.map(strict => {
+                    const day = strict.day;
+                    const split = day.split("-");
+                    const year = split[0];
+                    const month = split[1];
+                    const dateWithHours = split[2];
+                    const date = dateWithHours.split("T")[0];
+                    newStrictsToShow = newStrictsToShow.concat(new Date(year, month - 1, date));
+                })
+                setHoursToStrict(strictHours);
+                setNewStrict(newStrictsToShow);
+            } catch (error) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: error.response.data,
+                })
+            }
         }
         start();
     }, [])
@@ -83,27 +91,11 @@ const MakeApp = (props) => {
             }
 
         } catch (error) {
-            if (error === "a") {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: `התור נתפס על ידי לקוח!`,
-                })
-            }
-            else if (error === "אחד התורים נתפס על ידי לקוח") {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: `אחד התורים נתפס על ידי לקוח!`,
-                })
-            }
-            else {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: `אין לך אישור לבצע שינויים,נא התחבר למערכת!`,
-                })
-            }
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error.response.data,
+            })
         }
 
     }

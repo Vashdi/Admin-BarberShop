@@ -33,12 +33,11 @@ const SingleAppToShow = ({ singleApp }) => {
                         else {
                             await appService.deleteById(false, singleApp.id, token, dateToDeleteFromClosed);
                         }
-                    }
-                    catch (exception) {
+                    } catch (error) {
                         Swal.fire({
                             position: 'center',
                             icon: 'error',
-                            title: `אין לך אישור לבצע שינויים, נא התחבר למערכת`,
+                            title: error.response.data,
                         })
                     }
                 }

@@ -53,20 +53,28 @@ const Break = (props) => {
 
     useEffect(() => {
         const start = async () => {
-            const stricts = await strictService.getAllStricts();
-            const strictHours = await strictService.getAllStrictDay();
-            let newStrictsToShow = newStrict;
-            stricts.map(strict => {
-                const day = strict.day;
-                const split = day.split("-");
-                const year = split[0];
-                const month = split[1];
-                const dateWithHours = split[2];
-                const date = dateWithHours.split("T")[0];
-                newStrictsToShow = newStrictsToShow.concat(new Date(year, month - 1, date));
-            })
-            setHoursToStrict(strictHours);
-            setNewStrict(newStrictsToShow);
+            try {
+                const stricts = await strictService.getAllStricts();
+                const strictHours = await strictService.getAllStrictDay();
+                let newStrictsToShow = newStrict;
+                stricts.map(strict => {
+                    const day = strict.day;
+                    const split = day.split("-");
+                    const year = split[0];
+                    const month = split[1];
+                    const dateWithHours = split[2];
+                    const date = dateWithHours.split("T")[0];
+                    newStrictsToShow = newStrictsToShow.concat(new Date(year, month - 1, date));
+                })
+                setHoursToStrict(strictHours);
+                setNewStrict(newStrictsToShow);
+            } catch (error) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: error.response.data,
+                })
+            }
         }
         start();
     }, [])
@@ -92,9 +100,17 @@ const Break = (props) => {
         }
     };
     const makeABreak = async () => {
-        await appService.createABreak(causeOfBreak, selectedDay, pickedHours);
-        appService.checkHours(selectedDay, hours, setHoursToShow, hoursToStrict, null);
-        setPickedHours([]);
+        try {
+            await appService.createABreak(causeOfBreak, selectedDay, pickedHours);
+            appService.checkHours(selectedDay, hours, setHoursToShow, hoursToStrict, null);
+            setPickedHours([]);
+        } catch (error) {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error.response.data,
+            })
+        }
     }
 
     return (<div className="container">

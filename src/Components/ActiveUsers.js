@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Swal from 'sweetalert2';
 import './ActiveUsers.css'
 import usersService from './Services/users'
 import SingleActivePerson from './SingleActivePerson';
@@ -10,9 +11,17 @@ const ActiveUsers = () => {
 
     React.useEffect(() => {
         const start = async () => {
-            const users = await usersService.getAllUsers();
-            setAllUsers(users);
-            setUsersToShow(users);
+            try {
+                const users = await usersService.getAllUsers();
+                setAllUsers(users);
+                setUsersToShow(users);
+            } catch (error) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: error.response.data,
+                })
+            }
         }
         start();
     }, [])
