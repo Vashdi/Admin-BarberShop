@@ -80,9 +80,6 @@ const create = async newAppointment => {
             const response = await axios.post(baseUrl, newAppointment, config)
             return response.data
         }
-        else {
-            throw new Error(error.response.data);
-        }
     } catch (error) {
         throw new Error(error.response.data);
     }

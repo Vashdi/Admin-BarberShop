@@ -2,6 +2,7 @@ import * as React from 'react';
 import './ActiveUsers.css'
 import usersService from './Services/users'
 import SingleBlockedPerson from './SingleBlockedPerson';
+import Swal from 'sweetalert2';
 
 const BlockedUsers = () => {
     const [allBlockedUsers, setAllBlockedUsers] = React.useState([]);
