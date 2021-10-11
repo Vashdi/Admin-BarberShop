@@ -1,7 +1,7 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import adminLogin from './Components/Services/Login';
-import Swal from 'sweetalert2';
+import Notify from './Components/Services/Notify';
 
 function App(props) {
     const [phone, setPhone] = useState("");
@@ -17,11 +17,7 @@ function App(props) {
             localStorage.setItem("admin", JSON.stringify({ phone: data.phone, token: data.token }))
             props.history.push("/");
         } catch (error) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error.response.data,
-            })
+            Notify.errorHandler(error.message);
         }
     }
     return (

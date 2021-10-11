@@ -2,7 +2,7 @@ import * as React from 'react';
 import './ActiveUsers.css'
 import usersService from './Services/users'
 import SingleBlockedPerson from './SingleBlockedPerson';
-import Swal from 'sweetalert2';
+import Notify from './Services/Notify';
 
 const BlockedUsers = () => {
     const [allBlockedUsers, setAllBlockedUsers] = React.useState([]);
@@ -16,11 +16,7 @@ const BlockedUsers = () => {
                 setAllBlockedUsers(users);
                 setUsersToShow(users);
             } catch (error) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: error.response.data,
-                })
+                Notify.errorHandler(error.message);
             }
         }
         start();

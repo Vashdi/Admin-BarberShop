@@ -6,10 +6,10 @@ import BlockIcon from '@mui/icons-material/Block';
 import usersService from './Services/users'
 import Tooltip from '@mui/material/Tooltip';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import Swal from 'sweetalert2';
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
+import Notify from './Services/Notify';
 
 
 const LightTooltip = styled(({ className, ...props }) => (
@@ -24,7 +24,7 @@ const LightTooltip = styled(({ className, ...props }) => (
     },
 }));
 
-const SinglePerson = ({ user, index, callback }) => {
+const SinglePerson = ({ user, callback }) => {
     const handleDelete = async () => {
         let token = " ";
         if (localStorage.getItem("admin")) {
@@ -36,11 +36,7 @@ const SinglePerson = ({ user, index, callback }) => {
             await usersService.deleteUser(user.id, token);
             callback(user);
         } catch (error) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error.response.data,
-            })
+            Notify.errorHandler(error.message);
         }
     }
 
@@ -56,11 +52,7 @@ const SinglePerson = ({ user, index, callback }) => {
             callback(user);
             await usersService.blockUser(user, token);
         } catch (error) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error.response.data,
-            })
+            Notify.errorHandler(error.message);
         }
     }
 

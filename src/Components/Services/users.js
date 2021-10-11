@@ -10,14 +10,6 @@ const getAllUsers = async () => {
     }
 }
 
-// const addUser = async (user, token) => {
-//     const config = {
-//         headers: { Authorization: token },
-//     }
-//     const response = await axios.post(baseUrl, user, config);
-//     return response.data;
-// }
-
 const deleteUser = async (id, token) => {
     try {
         const config = {
@@ -62,6 +54,5 @@ const unBlockUser = async (user, token) => {
         throw new Error(error.response.data);
     }
 }
-
 
 export default { getAllUsers, deleteUser, blockUser, getAllBlockedUsers, unBlockUser }

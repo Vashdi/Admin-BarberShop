@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Swal from 'sweetalert2';
 import './ActiveUsers.css'
+import Notify from './Services/Notify';
 import usersService from './Services/users'
 import SingleActivePerson from './SingleActivePerson';
 
@@ -16,11 +16,7 @@ const ActiveUsers = () => {
                 setAllUsers(users);
                 setUsersToShow(users);
             } catch (error) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: error.response.data,
-                })
+                Notify.errorHandler(error.message);
             }
         }
         start();

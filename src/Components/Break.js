@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import Swal from 'sweetalert2';
+import Notify from './Services/Notify';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -33,7 +33,7 @@ function getStyles(name, personName, theme) {
     };
 }
 
-const Break = (props) => {
+const Break = () => {
     const [causeOfBreak, setCasueOfBreak] = useState("");
     const [selectedDay, setSelectedDay] = useState(new Date());
     const [newStrict, setNewStrict] = useState([{ before: new Date() }, { daysOfWeek: [1, 6] }]);
@@ -47,7 +47,6 @@ const Break = (props) => {
             target: { value },
         } = event;
         setPickedHours(
-            // On autofill we get a the stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
@@ -70,11 +69,7 @@ const Break = (props) => {
                 setHoursToStrict(strictHours);
                 setNewStrict(newStrictsToShow);
             } catch (error) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: error.response.data,
-                })
+                Notify.errorHandler(error.message);
             }
         }
         start();
@@ -103,14 +98,11 @@ const Break = (props) => {
     const makeABreak = async () => {
         try {
             await appService.createABreak(causeOfBreak, selectedDay, pickedHours);
+            Notify.successHandler(`קבעת הפסקה בתאריך ${selectedDay.getDate()}/${selectedDay.getMonth() + 1}/${selectedDay.getFullYear()}  \n :בשעות \n ${pickedHours.join('\n')}`)
             appService.checkHours(selectedDay, hours, setHoursToShow, hoursToStrict, null);
             setPickedHours([]);
         } catch (error) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error.response.data,
-            })
+            Notify.errorHandler(error.message);
         }
     }
 

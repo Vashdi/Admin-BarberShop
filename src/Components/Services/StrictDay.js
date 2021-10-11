@@ -5,8 +5,9 @@ const makeNewStrictDay = async (strict, config) => {
     try {
         const request = await axios.post(baseUrl, strict, config);
         return request.data;
-    } catch (error) {
-        throw new Error(error.response.data);
+    }
+    catch (error) {
+        throw new Error('נא התחבר בשנית');
     }
 }
 

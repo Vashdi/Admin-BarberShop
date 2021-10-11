@@ -138,7 +138,7 @@ const checkHours = async (selectedDay, hours, setHoursToShow, hoursToStrict, set
             setHoursToShow(newHouresToShowFromCurrHour);
         }
     } catch (error) {
-        throw new Error(error.response.data);
+        throw new Error(error.message || error.response.data);
     }
 }
 
@@ -205,10 +205,15 @@ const sortAppointments = async (user) => {
 
 const createABreak = async (causeOfBreak, selectedDay, pickedHours) => {
     try {
+        // const data = localStorage.getItem("admin");
+        // const token = JSON.parse(data).token;
+        // const config = {
+        //     headers: { Authorization: `bearer ` + token }
+        // }
         const year = selectedDay.getFullYear();
         const month = selectedDay.getMonth() + 1;
         const day = selectedDay.getDate();
-        await axios.post("http://localhost:3001/adminAppointment/break", { array: pickedHours, year: year, month: month, day: day, cause: causeOfBreak });
+        await axios.post("http://localhost:3001/adminAppointment/break", { hours: pickedHours, year: year, month: month, day: day, cause: causeOfBreak });
     } catch (error) {
         throw new Error(error.response.data);
     }

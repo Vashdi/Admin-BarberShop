@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
 import appService from './Services/appointment'
+import Notify from "./Services/Notify";
 import SingleAppToShow from "./SingleAppToShow";
 import './SingleDayToShow.css'
-
 
 const SingleDayToShow = (props) => {
     const [allAppsForSingleDay, setAllAppsForSingleDay] = useState([]);
@@ -18,11 +17,7 @@ const SingleDayToShow = (props) => {
                 setAllAppsForSingleDay(sortedAppointmentsForSingleDay);
                 dispatch({ type: "REPLACEALL", payload: appointmentsForSingleDay })
             } catch (error) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: error.response.data,
-                })
+                Notify.errorHandler(error.message);
             }
         }
         getAppointmentsForSingleDay();

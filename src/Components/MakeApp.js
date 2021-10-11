@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import './MakeApp.css'
 import DayPicker from 'react-day-picker';
 import createNewAppService from './Services/createApp';
-import Swal from 'sweetalert2';
 import strictService from './Services/Strict';
 import appService from './Services/appointment';
 import axios from 'axios';
+import Notify from './Services/Notify';
 
 const MakeApp = (props) => {
     const [firstName, setFirstName] = useState("");
@@ -34,11 +34,7 @@ const MakeApp = (props) => {
                 setHoursToStrict(strictHours);
                 setNewStrict(newStrictsToShow);
             } catch (error) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: error.response.data,
-                })
+                Notify.errorHandler(error.message);
             }
         }
         start();
@@ -68,11 +64,7 @@ const MakeApp = (props) => {
         try {
             if (selectedDay !== "" && selectedDay !== " " && selectedDay && firstName !== "" && pickedHour !== " ") {
                 await createNewAppService.makeNewApp(selectedDay, firstName, lastName, pickedHour);
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: `נקבע תור עבור \n  ${firstName} ${lastName}\n בתאריך ${selectedDay.getDate() + "/" + (selectedDay.getMonth() + 1) + "/" + selectedDay.getFullYear()} בשעה ${pickedHour}`,
-                })
+                Notify.successHandler(`נקבע תור עבור \n  ${firstName} ${lastName}\n בתאריך ${selectedDay.getDate() + "/" + (selectedDay.getMonth() + 1) + "/" + selectedDay.getFullYear()} בשעה ${pickedHour}`);
                 if (hoursToShow.length === 1) {
                     const newSelectedDay = new Date(selectedDay.getFullYear(), selectedDay.getMonth(), selectedDay.getDate());
                     const newCloseDay = { date: newSelectedDay };
@@ -83,23 +75,12 @@ const MakeApp = (props) => {
                 setLastName("");
                 setPickedHour(" ");
             } else {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: `נא למלא את כל השדות ולבחור תאריך`,
-                })
+                Notify.errorHandler(`נא למלא את כל השדות ולבחור תאריך`);
             }
-
         } catch (error) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error.response.data,
-            })
+            Notify.errorHandler(error.message);
         }
-
     }
-
     return (<div className="container">
         <h3>קביעת תור חדש</h3>
         <h4>שם הלקוח</h4>

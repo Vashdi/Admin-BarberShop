@@ -7,8 +7,7 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import Swal from 'sweetalert2';
-
+import Notify from './Services/Notify';
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
     padding: 8,
@@ -60,43 +59,36 @@ const News = (props) => {
         }
     };
     const updateStricts = async () => {
-        const data = localStorage.getItem("admin");
-        const token = JSON.parse(data).token;
-        const config = {
-            headers: { Authorization: token },
-        }
         try {
+            const data = localStorage.getItem("admin");
+            const token = JSON.parse(data).token;
+            const config = {
+                headers: { Authorization: token },
+            }
             if (selectedDays.length > 0) {
-                let message = "";
-                selectedDays.forEach(async day => {
+                let messages = [];
+                for (let i = 0; i < selectedDays.length; i++) {
                     if (addOrSubDays === "הוסף ימי חופש") {
-                        message = `נקבע יום חופש בתאריך ${day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear()}`;
-                        await strictService.makeNewStrict({ day: day }, config);
+                        await strictService.makeNewStrict({ day: selectedDays[i] }, config);
+                        messages[i] = `${selectedDays[i].getDate() + "/" + (selectedDays[i].getMonth() + 1) + "/" + selectedDays[i].getFullYear()}`;
                     } else {
-                        message = `נקבע יום עבודה בתאריך ${day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear()}`;
-                        await strictService.deleteStrict({ ...config, data: { day: day } });
+                        await strictService.deleteStrict({ ...config, data: { day: selectedDays[i] } });
+                        messages[i] = `${selectedDays[i].getDate() + "/" + (selectedDays[i].getMonth() + 1) + "/" + selectedDays[i].getFullYear()}`;
                     }
-
-                })
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: message,
-                })
+                }
+                messages = messages.join('\n');
+                if (addOrSubDays === "הוסף ימי חופש") {
+                    Notify.successHandler(`:נקבעו ימי חופש בתאריכים\n` + messages);
+                }
+                else {
+                    Notify.successHandler(`:נקבעו ימי עבודה בתאריכים\n` + messages);
+                }
                 setSelectedDays([]);
             } else {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: "לא נבחרו תאריכים",
-                })
+                Notify.errorHandler("לא נבחרו תאריכים");
             }
         } catch (error) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error.response.data,
-            })
+            Notify.errorHandler(error.message);
         }
     }
 
@@ -106,43 +98,22 @@ const News = (props) => {
         const config = {
             headers: { Authorization: token },
         }
-
         try {
             if (end > start && selectedDay !== "" && selectedDay !== " " && selectedDay) {
                 await strictDayService.makeNewStrictDay({ day: selectedDay, start: start, end: end }, config);
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: `זמני העבודה בתאריך ${selectedDay.getDate() + "/" + (selectedDay.getMonth() + 1) + "/" + selectedDay.getFullYear()}\n !שונו בהצלחה\nשעת התחלה: ${start}\nשעת סיום: ${end}`,
-                })
+                Notify.successHandler(`זמני העבודה בתאריך ${selectedDay.getDate() + "/" + (selectedDay.getMonth() + 1) + "/" + selectedDay.getFullYear()}\n !שונו בהצלחה\nשעת התחלה: ${start}\nשעת סיום: ${end}`);
                 setSelectedDay("");
                 setStart(" ");
                 setEnd(" ");
             } else if (selectedDay === "" || selectedDay === " " || !selectedDay) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: "לא נבחר תאריך",
-                })
+                Notify.errorHandler("לא נבחר תאריך");
             } else if (start === " ") {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: "לא נבחרה שעת התחלה",
-                })
+                Notify.errorHandler("לא נבחרה שעת התחלה");
             } else if (end <= start) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: `שעת סיום לא תקינה, אנא בחר שעת סיום מאוחרת יותר משעת ההתחלה`,
-                })
+                Notify.errorHandler(`שעת סיום לא תקינה, אנא בחר שעת סיום מאוחרת יותר משעת ההתחלה`);
             }
         } catch (error) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error.response.data,
-            })
+            Notify.errorHandler(error.message);
         }
     }
 

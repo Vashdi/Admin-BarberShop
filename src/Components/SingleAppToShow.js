@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import appService from './Services/appointment';
 import Swal from 'sweetalert2';
+import Notify from "./Services/Notify";
 
 const SingleAppToShow = ({ singleApp }) => {
     const dispatch = useDispatch();
-    const [isClientApp, setIsClientApp] = useState(false);
     const deleteApp = () => {
         Swal.fire({
             title: 'האם אתה בטוח שברצונך\n ?למחוק את התור',
@@ -18,9 +17,6 @@ const SingleAppToShow = ({ singleApp }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 if (localStorage.getItem("admin")) {
-                    if (singleApp.user !== undefined) {
-                        setIsClientApp(true);
-                    }
                     const data = localStorage.getItem("admin");
                     const dataFromJson = JSON.parse(data);
                     const token = dataFromJson.token;
@@ -34,11 +30,7 @@ const SingleAppToShow = ({ singleApp }) => {
                             await appService.deleteById(false, singleApp.id, token, dateToDeleteFromClosed);
                         }
                     } catch (error) {
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'error',
-                            title: error.response.data,
-                        })
+                        Notify.errorHandler(error.message);
                     }
                 }
             }
@@ -46,7 +38,7 @@ const SingleAppToShow = ({ singleApp }) => {
     }
 
     return singleApp.user !== undefined ?
-        (<div> {singleApp.user.phone} {singleApp.user.firstname} {singleApp.user.lastname} : {singleApp.hour}  <input className="deleteButton" type="button" value="מחק" onClick={deleteApp} /></div>) :
+        (<div> {singleApp.user?.phone} {singleApp.user?.firstname} {singleApp.user?.lastname} : {singleApp.hour}  <input className="deleteButton" type="button" value="מחק" onClick={deleteApp} /></div>) :
         (<div> {singleApp.firstName} {singleApp.lastName} : {singleApp.hour}  <input className="deleteButton" type="button" value="מחק" onClick={deleteApp} /> </div>)
 }
 
