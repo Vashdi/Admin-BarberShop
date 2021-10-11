@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/adminAppointment'
+import urls from './globals';
 
 const makeNewApp = async (selectedDay, firstName, lastName, pickedHour) => {
     try {
@@ -12,7 +12,7 @@ const makeNewApp = async (selectedDay, firstName, lastName, pickedHour) => {
         const month = (selectedDay.getMonth() + 1);
         const day = selectedDay.getDate();
         const adminAppointment = { firstName: firstName, lastName: lastName, year: year, month: month, day: day, hour: pickedHour };
-        const request = await axios.post(baseUrl, adminAppointment, config)
+        const request = await axios.post(urls.adminAppointments, adminAppointment, config)
         return request.data;
     } catch (error) {
         throw new Error(error.response.data);
@@ -21,7 +21,7 @@ const makeNewApp = async (selectedDay, firstName, lastName, pickedHour) => {
 
 const getAllApp = async () => {
     try {
-        const resp = await axios.get(baseUrl);
+        const resp = await axios.get(urls.adminAppointments);
         return resp.data;
     } catch (error) {
         throw new Error(error.response.data);

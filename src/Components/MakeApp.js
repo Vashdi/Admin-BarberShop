@@ -6,6 +6,7 @@ import strictService from './Services/Strict';
 import appService from './Services/appointment';
 import axios from 'axios';
 import Notify from './Services/Notify';
+import urls from './Services/globals';
 
 const MakeApp = (props) => {
     const [firstName, setFirstName] = useState("");
@@ -68,7 +69,7 @@ const MakeApp = (props) => {
                 if (hoursToShow.length === 1) {
                     const newSelectedDay = new Date(selectedDay.getFullYear(), selectedDay.getMonth(), selectedDay.getDate());
                     const newCloseDay = { date: newSelectedDay };
-                    await axios.post("http://localhost:3001/closedDays", newCloseDay);
+                    await axios.post(urls.closedDays, newCloseDay);
                 }
                 appService.checkHours(selectedDay, hours, setHoursToShow, hoursToStrict, setPickedHour);
                 setFirstName("");

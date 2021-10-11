@@ -97,7 +97,7 @@ const Break = () => {
     };
     const makeABreak = async () => {
         try {
-            await appService.createABreak(causeOfBreak, selectedDay, pickedHours);
+            await appService.createABreak(causeOfBreak, selectedDay, pickedHours, hoursToShow);
             Notify.successHandler(`קבעת הפסקה בתאריך ${selectedDay.getDate()}/${selectedDay.getMonth() + 1}/${selectedDay.getFullYear()}  \n :בשעות \n ${pickedHours.join('\n')}`)
             appService.checkHours(selectedDay, hours, setHoursToShow, hoursToStrict, null);
             setPickedHours([]);

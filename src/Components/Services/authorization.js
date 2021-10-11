@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/authorization'
+import urls from './globals'
 
 let token = null
 
@@ -13,7 +13,7 @@ const create = async newAppointment => {
             const config = {
                 headers: { Authorization: token },
             }
-            const response = await axios.post(baseUrl, newAppointment, config)
+            const response = await axios.post(urls.auth, newAppointment, config)
             return response.data
         }
     } catch (error) {

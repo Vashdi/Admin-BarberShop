@@ -1,9 +1,9 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/strictDay'
+import urls from './globals';
 
 const makeNewStrictDay = async (strict, config) => {
     try {
-        const request = await axios.post(baseUrl, strict, config);
+        const request = await axios.post(urls.strictDay, strict, config);
         return request.data;
     }
     catch (error) {

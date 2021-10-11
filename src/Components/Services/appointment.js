@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/appointments'
+import urls from './globals'
 
 let token = null
 
@@ -9,7 +9,7 @@ const setToken = newToken => {
 
 const getAll = async () => {
     try {
-        const request = await axios.get(baseUrl);
+        const request = await axios.get(urls.appointments);
         return request.data;
     } catch (error) {
         throw new Error(error.response.data);
@@ -18,7 +18,7 @@ const getAll = async () => {
 
 const getByPhone = async (phone) => {
     try {
-        const request = await axios.get(baseUrl + "/" + phone);
+        const request = await axios.get(urls.appointments + "/" + phone);
         return request.data;
     } catch (error) {
         throw new Error(error.response.data);
@@ -32,12 +32,12 @@ const deleteById = async (isClientApp, id, token, dateToDeleteFromClosed) => {
     let request;
     try {
         if (isClientApp) {
-            request = await axios.delete(baseUrl + "/" + id, config);
+            request = await axios.delete(urls.appointments + "/" + id, config);
         }
         else {
-            request = await axios.delete('http://localhost:3001/adminAppointment/' + id, config);
+            request = await axios.delete(urls.adminAppointments + "/" + id, config);
         }
-        await axios.delete("http://localhost:3001/closedDays/" + dateToDeleteFromClosed);
+        await axios.delete(urls.closedDays + "/" + dateToDeleteFromClosed);
         return request.data;
     }
     catch (error) {
@@ -51,9 +51,9 @@ const getByDate = async (date) => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
-        const request = await axios.get(baseUrl + `/${year}/${month}/${day}`);
+        const request = await axios.get(urls.appointments + `/${year}/${month}/${day}`);
         const apps = request.data;
-        const adminRequest = await axios.get(`http://localhost:3001/adminAppointment/${year}/${month}/${day}`);
+        const adminRequest = await axios.get(urls.adminAppointments + `/${year}/${month}/${day}`);
         const adminApps = adminRequest.data;
         const allApp = apps.concat(adminApps);
         return allApp;
@@ -64,7 +64,7 @@ const getByDate = async (date) => {
 
 const deleteApp = async (id) => {
     try {
-        const request = await axios.delete(baseUrl + "/" + id);
+        const request = await axios.delete(urls.appointments + "/" + id);
         return request.data;
     } catch (error) {
         throw new Error(error.response.data);
@@ -77,7 +77,7 @@ const create = async newAppointment => {
             const config = {
                 headers: { Authorization: token },
             }
-            const response = await axios.post(baseUrl, newAppointment, config)
+            const response = await axios.post(urls.appointments, newAppointment, config)
             return response.data
         }
     } catch (error) {
@@ -87,7 +87,7 @@ const create = async newAppointment => {
 
 const update = async (id, newObject) => {
     try {
-        const request = await axios.put(`${baseUrl} /${id}`, newObject)
+        const request = await axios.put(`${urls.appointments} /${id}`, newObject)
         return request.then(response => response.data)
     } catch (error) {
         throw new Error(error.response.data);
@@ -114,8 +114,8 @@ const checkHours = async (selectedDay, hours, setHoursToShow, hoursToStrict, set
                 const endIndex = hours.indexOf(end);
                 newHours = hours.slice(startIndex, endIndex);
             }
-            const resp = await axios.get(`http://localhost:3001/appointments/day/${ourDay}`);
-            const respAdmin = await axios.get(`http://localhost:3001/adminAppointment/${ourYear}/${ourMonth}/${ourDay}`);
+            const resp = await axios.get(urls.appointments + `/day/${ourDay}`);
+            const respAdmin = await axios.get(urls.adminAppointments + `/${ourYear}/${ourMonth}/${ourDay}`);
             const appForDay = resp.data;
             const adminAppForDay = respAdmin.data;
             const appForDayAndMonth = appForDay.filter(app => app.month === ourMonth);
@@ -203,17 +203,17 @@ const sortAppointments = async (user) => {
     }
 }
 
-const createABreak = async (causeOfBreak, selectedDay, pickedHours) => {
+const createABreak = async (causeOfBreak, selectedDay, pickedHours, hoursToShow) => {
     try {
-        // const data = localStorage.getItem("admin");
-        // const token = JSON.parse(data).token;
-        // const config = {
-        //     headers: { Authorization: `bearer ` + token }
-        // }
         const year = selectedDay.getFullYear();
         const month = selectedDay.getMonth() + 1;
         const day = selectedDay.getDate();
-        await axios.post("http://localhost:3001/adminAppointment/break", { hours: pickedHours, year: year, month: month, day: day, cause: causeOfBreak });
+        await axios.post(urls.break, { hours: pickedHours, year: year, month: month, day: day, cause: causeOfBreak });
+        if (pickedHours.length === hoursToShow.length) {
+            const newCloseDay = { date: new Date(year, month - 1, day) };
+            console.log(newCloseDay);
+            await axios.post(urls.closedDays, newCloseDay);
+        }
     } catch (error) {
         throw new Error(error.response.data);
     }
