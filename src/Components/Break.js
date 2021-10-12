@@ -77,6 +77,7 @@ const Break = () => {
 
     useEffect(() => {
         appService.checkHours(selectedDay, hours, setHoursToShow, hoursToStrict, null);
+        setPickedHours([]);
     }, [selectedDay])
 
     const handleDayClick = (day, { selected }) => {
