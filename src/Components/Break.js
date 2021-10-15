@@ -80,7 +80,10 @@ const Break = () => {
         setPickedHours([]);
     }, [selectedDay])
 
-    const handleDayClick = (day, { selected }) => {
+    const handleDayClick = (day, modifiers = {}, { selected }) => {
+        if (modifiers.disabled) {
+            return;
+        }
         if (selected) {
             setSelectedDay(" ");
         }
@@ -120,6 +123,7 @@ const Break = () => {
         <div className="breakDateContainer">
             <div className="breakDayPicker">
                 <DayPicker
+                    todayButton="חזור להיום" onTodayButtonClick={(day, modifiers) => setSelectedDay(new Date())}
                     disabledDays={newStrict}
                     selectedDays={selectedDay}
                     onDayClick={handleDayClick}

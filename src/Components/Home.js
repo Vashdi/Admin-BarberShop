@@ -26,7 +26,8 @@ const Home = () => {
     }
     return (<div className="HomeContainer">
         <div className="Calendar">
-            <DayPicker disabledDays={[{ before: new Date() }]} onDayClick={handleDayClick} selectedDays={selectedDay} modifiers={modifiers} modifiersStyles={modifiersStyles} />
+            <DayPicker todayButton="חזור להיום" onTodayButtonClick={(day, modifiers) => setSelectedDay(new Date())}
+                disabledDays={[{ before: new Date() }]} onDayClick={handleDayClick} selectedDays={selectedDay} modifiers={modifiers} modifiersStyles={modifiersStyles} />
         </div>
         <div className="Appointments">
             <p className="title"> {selectedDay.getDate()}/{selectedDay.getMonth() + 1}/{selectedDay.getFullYear()}</p>

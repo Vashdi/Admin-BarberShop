@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Notify from './Services/Notify';
+import Swal from 'sweetalert2';
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
     padding: 8,
@@ -66,11 +67,26 @@ const News = (props) => {
                 headers: { Authorization: token },
             }
             if (selectedDays.length > 0) {
+                let resp;
+                if (addOrSubDays === "הוסף ימי חופש") {
+                    resp = await Swal.fire({
+                        title: 'האם אתה בטוח שברצונך\n ?לקבוע ימי חופש',
+                        text: '!בדוק האם קיימים תורים בימים אלו',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'ביטול',
+                        confirmButtonText: '!כן, קבע'
+                    })
+                }
                 let messages = [];
                 for (let i = 0; i < selectedDays.length; i++) {
                     if (addOrSubDays === "הוסף ימי חופש") {
-                        await strictService.makeNewStrict({ day: selectedDays[i] }, config);
-                        messages[i] = `${selectedDays[i].getDate() + "/" + (selectedDays[i].getMonth() + 1) + "/" + selectedDays[i].getFullYear()}`;
+                        if (resp.isConfirmed === true) {
+                            await strictService.makeNewStrict({ day: selectedDays[i] }, config);
+                            messages[i] = `${selectedDays[i].getDate() + "/" + (selectedDays[i].getMonth() + 1) + "/" + selectedDays[i].getFullYear()}`;
+                        }
                     } else {
                         await strictService.deleteStrict({ ...config, data: { day: selectedDays[i] } });
                         messages[i] = `${selectedDays[i].getDate() + "/" + (selectedDays[i].getMonth() + 1) + "/" + selectedDays[i].getFullYear()}`;
@@ -78,7 +94,9 @@ const News = (props) => {
                 }
                 messages = messages.join('\n');
                 if (addOrSubDays === "הוסף ימי חופש") {
-                    Notify.successHandler(`:נקבעו ימי חופש בתאריכים\n` + messages);
+                    if (resp.isConfirmed === true) {
+                        Notify.successHandler(`:נקבעו ימי חופש בתאריכים\n` + messages);
+                    }
                 }
                 else {
                     Notify.successHandler(`:נקבעו ימי עבודה בתאריכים\n` + messages);
@@ -98,13 +116,26 @@ const News = (props) => {
         const config = {
             headers: { Authorization: token },
         }
+        let resp;
         try {
             if (end > start && selectedDay !== "" && selectedDay !== " " && selectedDay) {
-                await strictDayService.makeNewStrictDay({ day: selectedDay, start: start, end: end }, config);
-                Notify.successHandler(`זמני העבודה בתאריך ${selectedDay.getDate() + "/" + (selectedDay.getMonth() + 1) + "/" + selectedDay.getFullYear()}\n !שונו בהצלחה\nשעת התחלה: ${start}\nשעת סיום: ${end}`);
-                setSelectedDay("");
-                setStart(" ");
-                setEnd(" ");
+                resp = await Swal.fire({
+                    title: 'האם אתה בטוח שברצונך\n ?לעדכן את שעות העבודה',
+                    text: '!בדוק האם קיימים תורים בשעות אלו',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'ביטול',
+                    confirmButtonText: '!כן, עדכן'
+                })
+                if (resp.isConfirmed === true) {
+                    await strictDayService.makeNewStrictDay({ day: selectedDay, start: start, end: end }, config);
+                    Notify.successHandler(`זמני העבודה בתאריך ${selectedDay.getDate() + "/" + (selectedDay.getMonth() + 1) + "/" + selectedDay.getFullYear()}\n !שונו בהצלחה\nשעת התחלה: ${start}\nשעת סיום: ${end}`);
+                    setSelectedDay("");
+                    setStart(" ");
+                    setEnd(" ");
+                }
             } else if (selectedDay === "" || selectedDay === " " || !selectedDay) {
                 Notify.errorHandler("לא נבחר תאריך");
             } else if (start === " ") {

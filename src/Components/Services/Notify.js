@@ -9,7 +9,6 @@ const errorHandler = (errorMsg) => {
 }
 
 const successHandler = (successMsg) => {
-    console.log(successMsg);
     Swal.fire({
         position: 'center',
         icon: 'success',

@@ -211,7 +211,6 @@ const createABreak = async (causeOfBreak, selectedDay, pickedHours, hoursToShow)
         await axios.post(urls.break, { hours: pickedHours, year: year, month: month, day: day, cause: causeOfBreak });
         if (pickedHours.length === hoursToShow.length) {
             const newCloseDay = { date: new Date(year, month - 1, day) };
-            console.log(newCloseDay);
             await axios.post(urls.closedDays, newCloseDay);
         }
     } catch (error) {

@@ -45,7 +45,10 @@ const MakeApp = (props) => {
         appService.checkHours(selectedDay, hours, setHoursToShow, hoursToStrict, setPickedHour);
     }, [selectedDay])
 
-    const handleDayClick = (day, { selected }) => {
+    const handleDayClick = (day, modifiers = {}, { selected }) => {
+        if (modifiers.disabled) {
+            return;
+        }
         if (selected) {
             setSelectedDay(" ");
         }
@@ -97,6 +100,7 @@ const MakeApp = (props) => {
             <h4>בחירת תאריך ושעה</h4>
             <div className="dayPicker">
                 <DayPicker
+                    todayButton="חזור להיום" onTodayButtonClick={(day, modifiers) => setSelectedDay(new Date())}
                     disabledDays={newStrict}
                     selectedDays={selectedDay}
                     onDayClick={handleDayClick}
