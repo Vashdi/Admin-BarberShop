@@ -1,7 +1,6 @@
 .container{
     text-align: center;
     padding-top: 20px;
-    padding-bottom: 50px;
     display: flex;
     flex-direction: column;
 }
@@ -35,7 +34,9 @@
 
 .dateContainer{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .dayPicker{
@@ -49,9 +50,10 @@
 
 .hourPicker{
     display:flex;
-    flex-direction: row-reverse;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-left: 20px;
 }
 
 .saveButton{

@@ -13,7 +13,7 @@ const MakeApp = (props) => {
     const [lastName, setLastName] = useState("");
     const [selectedDay, setSelectedDay] = useState(new Date());
     const [pickedHour, setPickedHour] = useState('');
-    const [newStrict, setNewStrict] = useState([{ before: new Date() }, { daysOfWeek: [1, 6] }]);
+    const [newStrict, setNewStrict] = useState([{ before: new Date() }, { daysOfWeek: [6] }]);
     const hours = ["08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"];
     const [hoursToShow, setHoursToShow] = useState(hours);
     const [hoursToStrict, setHoursToStrict] = useState([]);
@@ -96,8 +96,8 @@ const MakeApp = (props) => {
             <h5 className="lastNameTitle">שם משפחה</h5>
             <input dir='rtl' type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
         </div>
+        <h4>בחירת תאריך ושעה</h4>
         <div className="dateContainer">
-            <h4>בחירת תאריך ושעה</h4>
             <div className="dayPicker">
                 <DayPicker
                     todayButton="חזור להיום" onTodayButtonClick={(day, modifiers) => setSelectedDay(new Date())}
