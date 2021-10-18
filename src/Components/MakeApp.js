@@ -85,20 +85,20 @@ const MakeApp = (props) => {
             Notify.errorHandler(error.message);
         }
     }
-    return (<div className="container">
+    return (<div className="containerMake">
         <h3>קביעת תור חדש</h3>
         <h4>שם הלקוח</h4>
-        <div className="firstName">
-            <h5 className="firstNameTitle">שם פרטי</h5>
+        <div className="firstNameMake">
+            <h5 className="firstNameTitleMake">שם פרטי</h5>
             <input dir='rtl' type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
         </div>
-        <div className="lastName">
-            <h5 className="lastNameTitle">שם משפחה</h5>
+        <div className="lastNameMake">
+            <h5 className="lastNameTitleMake">שם משפחה</h5>
             <input dir='rtl' type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
         </div>
         <h4>בחירת תאריך ושעה</h4>
-        <div className="dateContainer">
-            <div className="dayPicker">
+        <div className="dateContainerMake">
+            <div className="dayPickerMake">
                 <DayPicker
                     todayButton="חזור להיום" onTodayButtonClick={(day, modifiers) => setSelectedDay(new Date())}
                     disabledDays={newStrict}
@@ -108,8 +108,8 @@ const MakeApp = (props) => {
                     modifiersStyles={modifiersStyles}
                 />
             </div>
-            <div className="hourPicker">
-                <h5 className="hourTitle">בחירת שעה</h5>
+            <div className="hourPickerMake">
+                <h5 className="hourTitleMake">בחירת שעה</h5>
                 <select value={pickedHour} onChange={(e) => setPickedHour(e.target.value)} >
                     {
                         hoursToShow.map((hour, index) => {
@@ -120,7 +120,7 @@ const MakeApp = (props) => {
             </div>
         </div>
         <div>
-            <input className="saveButton" type="button" value="קבע תור" onClick={makeAnAppointment} />
+            <input className="saveButtonMake" type="button" value="קבע תור" onClick={makeAnAppointment} />
         </div>
     </div>)
 }
